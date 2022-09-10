@@ -64,7 +64,8 @@ class LoginOut(BaseModel):
 
 @app.get(
     path="/",
-    status_code=status.HTTP_200_OK
+    status_code=status.HTTP_200_OK,
+    tags=["home"]
 )
 def home():
     return {"Hello": "World"}
@@ -74,7 +75,8 @@ def home():
 @app.post(
     path="/person/new",
     response_model=PersonOut,
-    status_code=status.HTTP_201_CREATED
+    status_code=status.HTTP_201_CREATED,
+    tags=["persons"]
 )
 def create_person(person: Person = Body(...)):
     return person
@@ -83,7 +85,8 @@ def create_person(person: Person = Body(...)):
 # Validaciones: Query Parameters 
 @app.get(
     path="/person/detail",
-    status_code=status.HTTP_200_OK
+    status_code=status.HTTP_200_OK,
+    tags=["persons"]
 )
 def show_person(
         name: Optional[str] = Query(
@@ -107,7 +110,8 @@ persons_ids = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
 @app.get(
     path="/person/detail/{person_id}",
-    status_code=status.HTTP_202_ACCEPTED
+    status_code=status.HTTP_202_ACCEPTED,
+    tags=["persons"]
 )
 def show_person(
         person_id: int = Path(..., gt=0, example=127)
@@ -124,7 +128,8 @@ def show_person(
 # Validaciones: Request Body 
 @app.put(
     path="/person/{person_id}",
-    status_code=status.HTTP_202_ACCEPTED
+    status_code=status.HTTP_202_ACCEPTED,
+    tags=["persons"]
 )
 def update_person(
         person_id: int = Path(
@@ -148,7 +153,8 @@ def update_person(
 @app.post(
     path="/login",
     response_model=LoginOut,
-    status_code=status.HTTP_200_OK
+    status_code=status.HTTP_200_OK,
+    tags=["auth"]
 )
 def login(username: str = Form(...), password: str = Form(...)):
     return LoginOut(username=username)
@@ -157,7 +163,8 @@ def login(username: str = Form(...), password: str = Form(...)):
 # Cookies and Headers Parameters
 @app.post(
     path="/contact",
-    status_code=status.HTTP_201_CREATED
+    status_code=status.HTTP_201_CREATED,
+    tags=["contacts"]
 )
 def contact(
         first_name: str = Form(..., max_length=50, min_length=1),
@@ -173,7 +180,9 @@ def contact(
 # Files
 
 @app.post(
-    path="/post-image"
+    path="/post-image",
+    status_code=status.HTTP_200_OK,
+    tags=["files"]
 )
 def post_image(image: UploadFile = File(...)):
     return {
