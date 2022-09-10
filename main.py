@@ -1,9 +1,10 @@
 # Python
+from enum import Enum
 from lib2to3.pgen2.token import TILDE
 from typing import Optional
 
 # Pydantic
-from pydantic import BaseModel
+from pydantic import BaseModel, Field 
 
 # FastAPI 
 from fastapi import FastAPI 
@@ -13,6 +14,14 @@ app = FastAPI()
 
 
 # Models 
+class HairColors(Enum):
+    white = 'white'
+    brown = 'brown'
+    black = 'black'
+    blonde = 'blonde'
+    red = 'red'
+
+
 class Location(BaseModel):
     city: str 
     state: str 
@@ -20,11 +29,11 @@ class Location(BaseModel):
 
 
 class Person(BaseModel):
-    first_name: str
-    last_name: str 
-    age: int
-    hair_color: Optional[str] = None 
-    is_married: Optional[bool] = None
+    first_name: str = Field(..., min_length=1, max_length=50)
+    last_name: str = Field(..., min_length=1, max_length=50)
+    age: int = Field(..., gt=0, le=115)
+    hair_color: Optional[HairColors] = Field(default=None) 
+    is_married: Optional[bool] = Field(default=None)
 
 
 
@@ -43,9 +52,7 @@ def create_person(person: Person = Body(...)):
 @app.get("/person/detail")
 def show_person(
     name: Optional[str] = Query(
-            None, 
-            min_length=1, 
-            max_length=50, 
+            None, min_length=1, max_length=50, 
             title="This is the person name. It's between 1 and 50 characters"
         ), 
     age: str = Query(
