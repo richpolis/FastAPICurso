@@ -28,12 +28,15 @@ class Location(BaseModel):
     country: str 
 
 
-class Person(BaseModel):
+class PersonBase(BaseModel):
     first_name: str = Field(..., min_length=1, max_length=50, example="Facundo")
     last_name: str = Field(..., min_length=1, max_length=50, example="García Martoni")
     age: int = Field(..., gt=0, le=115, example=21)
     hair_color: Optional[HairColors] = Field(default=None, example="blonde") 
     is_married: Optional[bool] = Field(default=None, example=False)
+
+
+class Person(PersonBase):
     password: str = Field(..., min_length=8, example="Patito$123")
 
     # class Config:
@@ -47,12 +50,8 @@ class Person(BaseModel):
     #         }
     #     }
 
-class PersonOut(BaseModel):
-    first_name: str = Field(..., min_length=1, max_length=50)
-    last_name: str = Field(..., min_length=1, max_length=50)
-    age: int = Field(..., gt=0, le=115)
-    hair_color: Optional[HairColors] = Field(default=None) 
-    is_married: Optional[bool] = Field(default=None)
+class PersonOut(PersonBase):
+    pass
 
 
 @app.get("/")
